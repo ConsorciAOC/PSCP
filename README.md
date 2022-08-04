@@ -9,9 +9,29 @@
 | --- | --- | --- | --- |
 | V2.0 | 21/08/2015 | Òscar Trapote | Creació del document |
 
+# Índex
+
+1. [1 Introducció](#1)
+2. [2 Transmissions de dades disponibles](#2)
+3. [3 Funcionament del servei](#3)
+	1.  [3.1 Enviament d'actuacions a la PSCP](#3.1)
+	2.	[3.2 Consulta de les actuacions associades a un expedient](#3.2)
+4. [4 Estats del servei – codis d&#39;error](#4)
+5. [5 Missatgeria dels serveis](#5)
+	1.	[5.1 Dades genèriques a la petició PCI](#5.1)
+	2.	[5.2 Resposta – dades específiques](#5.2)
+	3.	[5.3 Petició - publicació d&#39;un anunci de licitació](#5.3)
+		1.  [5.3.1 Dades específiques](#5.3.1)
+	4.	[5.4 Petició - publicació d&#39;una adjudicació de contracte](#5.4)
+		1. [5.4.1 Dades específiques](#5.4.1)
+	5.  [5.5 Petició - publicació d&#39;una cancel·lació de contracte](#5.5)
+		1. [5.5.1 Dades específiques](#5.5.1)
+	6.  [5.6 Petició – consulta de l&#39;estat d&#39;un expedient (publicacions)](#5.6)
+		1. [5.6.1 Dades específiques](#5.6.1)
+	7.	[5.7 Taules codificadores generals](#5.7)
 
 
-# 1 Introducció
+# 1 Introducció <a name="1"></a>
 
 Aquest document detalla el procediment d&#39;us del producte d&#39;interopreabilitat amb la PSCP (Plataforma de Serveis de Contractació Pública) a través de la plataforma PCI.
 
@@ -25,7 +45,7 @@ Per poder realitzar la integració cal conèixer prèviament la següent documen
 
 [PCI]:https://github.com/ConsorciAOC/PCI
 
-# 2 Transmissions de dades disponibles
+# 2 Transmissions de dades disponibles <a name="2"></a>
 
 Les dades disponibles a través del servei són les que es presenten a continuació:
 
@@ -47,7 +67,7 @@ Les dades disponibles a través del servei són les que es presenten a continuac
 | --- | --- | --- |
 | PSCP | PROVES | - |
 
-# 3 Funcionament del servei
+# 3 Funcionament del servei <a name="3"></a>
 
 Els casos d&#39;us del servei s&#39;ilustren al següent gràfic:
 
@@ -57,8 +77,8 @@ Aquests casos d&#39;ús son els següents:
 
 - Enviament d&#39;una actuació a la PSCP [licitació, adjudicació i cancel·lació]
 - Consulta de l&#39;estat de les actuacions associades a un expedient
-
-## 3.1 Enviament d&#39;actuacions a la PSCP
+ 
+## 3.1 Enviament d&#39;actuacions a la PSCP <a name="3.1"></a>
 
 Quan es vol realitzar una actuació a la PSCP s&#39;ha d&#39;enviar dins del bloc de missatgeria específica de la petició PCI un missatge de tipus _publishContract_, _publishContractAward_ o _cancelTendering_, tots ells definits al manual d&#39;integració de la PSCP.
 
@@ -96,7 +116,7 @@ Pot ser però -si els documents adjunts tenen un volum molt gran o si hi ha molt
 
 Passat aquest temps es retornara un codi de resultat que indica que la petició passa a executar-se de manera asíncrona i que caldrà consultar el seu estat mitjançant una operació que descriurem a continuació.
 
-## 3.2 Consulta de les actuacions associades a un expedient
+## 3.2 Consulta de les actuacions associades a un expedient <a name="3.2"></a>
 
 La natura de la PSCP és asincrona. Després de realitzar qualsevol actuació amb èxit aquesta queda marcada com a &#39;_en edició_&#39; i és imprescindible entrar al portal web de PSCP per a revisar i aprovar la actuació (ja sigui publicació, adjudicació o cancel·lació).
 
@@ -112,7 +132,7 @@ Per últim, indicar que les actuacions contra un expedient son acumulatives, és
 
 La publicació vigent serà la més recent de cada tipus, per exemple, si s&#39;envien tres actuacions de publicació d&#39;anunci de licitació, la darrera serà la que finalment a aportat totes les dades necessàries i serà la que PSCP acabarà publicant.
 
-# 4 Estats del servei – codis d&#39;error
+# 4 Estats del servei – codis d&#39;error <a name="4"></a>
 
 Donada la natura asíncrona del servei de publicació a la PSCP i a algunes de les tasques que implica la publicació -com poden ser la pujada de fitxers adjunts cap a un servidor SFTP o la descàrrega de fitxers d&#39;evidències des de la PSCP- el servei implementa la següent màquina d&#39;estats.
 
@@ -256,11 +276,11 @@ A continuació es mostra la taula de codis d&#39;error extreta del manual d&#39;
 | 1043 | Es produeix si en una fase final (adjudicació deserta, formalització o anul·lació) la data de fi de publicació no és com a mínim a 5 anys superior a la data de publicació |
 | 1044 | Es produeix si no s&#39;ha informat de la data d&#39;adjudicació del contracte en un lot |
 
-# 5 Missatgeria dels serveis
+# 5 Missatgeria dels serveis <a name="5"></a>
 
 A continuació es detalla la missatgeria corresponent al bloc de dades específiques de les modalitats de consum del producte PSCP.
 
-## 5.1 Dades genèriques a la petició PCI
+## 5.1 Dades genèriques a la petició PCI <a name="5.1"></a>
 
 En el cas d&#39;enviament de documents adjunts caldrà informar les dades dels documents dins del bloc
 
@@ -313,7 +333,7 @@ Les dades obligatòries son :
 
 - _Id_ : Aquest camp identifica el fitxer i el relaciona amb la petició específica PSCP. Obligatòriament, aquest identificador ha de ser el hash MD5 del contingut del fitxer en representació hexadecimal i amb les lletres en minúscules.<ul><br>9359226c46914cb2fc10c786e4c8e7c7 és un identificador vàlid<br>9359226C46914CB2FC10C786E4C8E7C7 és un identificador invàlid</ul>
 
-## 5.2 Resposta – dades específiques
+## 5.2 Resposta – dades específiques <a name="5.2"></a>
 
 Totes les operacions tenen com a resposta el següent missatge:
 
@@ -392,13 +412,13 @@ Com es pot observar a l&#39;exemple hi ha quatre accions per a l&#39;expedient; 
 - La següent acció és un intent de publicació d&#39;adjudicació de contracte per a l&#39;expedient. Com es pot veure, la data de publicació és anterior al moment de fer petició pel que aquesta finalitza amb estat 011 (&#39;Data de publicació pertany al passat&#39;, codi d&#39;error de negoci PSCP).
 - La següent acció corregeix les dades de la acció anterior i es registra amb èxit a la PSCP. L&#39;estat de la petició queda a 901, es a dir, cal que un usuari realitzi la aprovació de l&#39;anunci des de la web de la PSCP per a que aquesta l&#39;acabi publicant.
 
-## 5.3 Petició - publicació d&#39;un anunci de licitació
+## 5.3 Petició - publicació d&#39;un anunci de licitació <a name="5.3"></a>
 
 Aquest cas d&#39;ús es donarà en el moment en que un gestor d&#39;expedients de contractació vulgui publicar un anunci de licitació a la platatorma PSCP de la Generalitat.
 
 ![5](captures/5.png)
 
-### 5.3.1 Dades específiques
+### 5.3.1 Dades específiques <a name="5.3.1"></a>
 
 La petició especifica per a aquesta operació és un missatge de tipus _publishContractNotice_. Per a més referències, consulteu el manual d&#39;integració de la PSCP (versió 6.5).
 
@@ -620,13 +640,13 @@ I al bloc WSDocumentReference de la petició PSCP
 
 Així doncs, en el moment de realitzar la transferencia dels fitxers adjunts cap a la PSCP, el servei cercarà el contingut del document mitjançant l&#39;ús de la clau _fileURI_, que a l&#39;exemple té el valor &#39;9359226c46914cb2fc10c786e4c8e7c7&#39;.
 
-## 5.4 Petició - publicació d&#39;una adjudicació de contracte
+## 5.4 Petició - publicació d&#39;una adjudicació de contracte <a name="5.4"></a>
 
 Aquest cas d&#39;ús es donarà en el moment en que un gestor d&#39;expedients de contractació vulgui publicar la adjudicació d&#39;un contracte a la platatorma PSCP de la Generalitat.
 
 ![6](captures/6.png)
 
-### 5.4.1 Dades específiques
+### 5.4.1 Dades específiques <a name="5.4.1"></a>
 
 La petició especifica per a aquesta operació és un missatge de tipus _publishContractAwardNotice_. Per a més referències, consulteu el manual d&#39;integració de la PSCP (versió 6.5).
 
@@ -733,13 +753,13 @@ A continuació es mostra un exemple de petició PCI amb les dades especifiques c
 ![image](https://user-images.githubusercontent.com/32306731/137281698-9dfc2044-94f7-487f-a7d6-9a4e0707feb3.png) Aquest exemple té únicament com a finalitat mostrar la estructura que ha de tenir una petició de publicació d&#39;anunci d&#39;adjudicació de contracte i en cap cas ha de ser près com a plantilla o model de petició. 
 
 
-## 5.5 Petició - publicació d&#39;una cancel·lació de contracte
+## 5.5 Petició - publicació d&#39;una cancel·lació de contracte <a name="5.5"></a>
 
 Aquest cas d&#39;ús es donarà en el moment en que un gestor d&#39;expedients de contractació vulgui cancelar un contracte previament publicat a la plataforma PSCP de la Generalitat.
 
 ![7](captures/7.png)
 
-### 5.5.1 Dades específiques
+### 5.5.1 Dades específiques <a name="5.5.1"></a>
 
 La petició especifica per a aquesta operació és un missatge de tipus _cancelTendering_. Per a més referències, consulteu el manual d&#39;integració de la PSCP (versió 6.5).
 
@@ -836,13 +856,13 @@ A continuació es mostra un exemple de petició PCI amb les dades especifiques c
  ![image](https://user-images.githubusercontent.com/32306731/137281698-9dfc2044-94f7-487f-a7d6-9a4e0707feb3.png) Aquest exemple té únicament com a finalitat mostrar la estructura que ha de tenir una petició de publicació de cancel·lació de contracte i en cap cas ha de ser près com a plantilla o model de petició. 
 
 
-## 5.6 Petició – consulta de l&#39;estat d&#39;un expedient (publicacions)
+## 5.6 Petició – consulta de l&#39;estat d&#39;un expedient (publicacions) <a name="5.6"></a>
 
 Aquest cas d&#39;ús es donarà en el moment en que un gestor d&#39;expedients de contractació vulgui saber en quin estat es troben aquelles publicacions relacionades amb un expedient publicat a la plataforma PSCP de la Generalitat.
 
 ![8](captures/8.png)
 
-### 5.6.1 Dades específiques
+### 5.6.1 Dades específiques <a name="5.6.1"></a>
 
 La petició especifica per a aquesta operació és un missatge de tipus _pscpPublicationStatus_, propi del nostre sistema, donat que PSCP no ofererix cap operació de consulta de l&#39;estat dels expedients.
 
@@ -917,7 +937,7 @@ A continuació es mostra un exemple de petició PCI amb les dades especifiques c
 ```
 
 
-## 5.7 Taules codificadores generals
+## 5.7 Taules codificadores generals <a name="5.7"></a>
 
 La següent taula és un extracte del manual d&#39;integració de la PSCP.
 
