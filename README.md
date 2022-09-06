@@ -8,6 +8,7 @@
 | **Versió** | **Data** | **Autor** | **Comentaris** |
 | --- | --- | --- | --- |
 | V2.0 | 21/08/2015 | Òscar Trapote | Creació del document |
+| V2.1 | 29/08/2022 | Òscar Trapote | Incorporació operació recuperació sobres d’ofertes. |
 
 # Índex
 
@@ -28,7 +29,9 @@
 		1. [5.5.1 Dades específiques](#5.5.1)
 	6.  [5.6 Petició – consulta de l&#39;estat d&#39;un expedient (publicacions)](#5.6)
 		1. [5.6.1 Dades específiques](#5.6.1)
-	7.	[5.7 Taules codificadores generals](#5.7)
+	7.	[5.7	Petició – recuperació dels sobres digitals de les ofertes](#5.7)
+		1. [5.7.1 Dades específiques](#5.7.1)
+	8.	[5.8 Taules codificadores generals](#5.8)
 
 
 # 1 Introducció <a name="1"></a>
@@ -55,7 +58,7 @@ Les dades disponibles a través del servei són les que es presenten a continuac
 
 | **PRODUCTE (CodigoProducto)** |**MODALITAT (CodigoCertificado)** | **DESCRIPCIO** |
 | --- | --- | --- |
-| **PSCP** | PSCP | Aquesta modalitat permet realitzar totes les operacions disponibles a a la PSCP.<br><br>En funció del tipus de missatge es pot realitzar qualsevol de les següents operacions:<br><br><li> Publicació d&#39;un anunci de licitació.<li> Publicació d&#39;una adjudicació de contracte.<li> Cancel·lació d&#39;una licitació o adjudicació.<li> Esmenes sobre les publicacions ja enviades a PSCP.<li> Consulta de l&#39;estat de les publicacions associades a un expedient. |
+| **PSCP** | PSCP | Aquesta modalitat permet realitzar totes les operacions disponibles a la PSCP.<br><br>En funció del tipus de missatge es pot realitzar qualsevol de les següents operacions:<br><br><li> Publicació d&#39;un anunci de licitació.<li> Publicació d&#39;una adjudicació de contracte.<li> Cancel·lació d&#39;una licitació o adjudicació.<li> Esmenes sobre les publicacions ja enviades a PSCP.<li> Consulta de l&#39;estat de les publicacions associades a un expedient. <li> Recuperació del sobres digitals de les ofertes |
 
 **(Correspondència amb missatgeria PCI)**
 
@@ -936,8 +939,97 @@ A continuació es mostra un exemple de petició PCI amb les dades especifiques c
 
 ```
 
+## 5.7 Petició – recuperació dels sobres digitals de les ofertes <a name="5.7"></a>
 
-## 5.7 Taules codificadores generals <a name="5.7"></a>
+Aquest servei, tot i no pertànyer a l’aplicació PSCP del departament d’Economia en sí, s’ha inclòs dins del repertori d’operacions disponibles dins d’aquesta modalitat de consum. 
+Mitjançant aquesta operació es pot recuperar els fitxers ZIP amb tota la informació relativa a les ofertes rebudes dins d’un procés de licitació.
+
+
+![10](captures/10.png)
+
+### 5.7.1 Dades específiques <a name="5.7.1"></a>
+
+La petició especifica per a aquesta operació és un missatge de tipus WSElectronicOffersExternalEvidencesList.
+A continuació es descriu els camps que formen aquest missatge.
+ 
+
+
+![11](captures/11.png)
+
+| --- | --- |
+| --- | --- |
+| /WSElectronicOffersExternalEvidencesList /capCodi | Codi de l’òrgan de contractació per al qual s’ha rebut les ofertes. |
+| /WSElectronicOffersExternalEvidencesList /codiBE| Codi del sistema extern del qual es vol recuperar els sobres digitals d’ofertes.|
+| /WSElectronicOffersExternalEvidencesList /diligenceId | Identificador de l&#39;expedient. |
+| /WSElectronicOffersExternalEvidencesList /lotId | Permet filtrar la documentació recuperada per número de lot.|
+| /WSElectronicOffersExternalEvidencesList /numPagina | Permet filtrar la documentació recuperada per número de pàgina. |
+| /WSElectronicOffersExternalEvidencesList /publisherId |Identificador del publicador de l’anunci. |
+
+A continuació es mostra un exemple de petició PCI amb les dades especifiques corresponents a aquest cas d&#39;us.
+
+```
+<pet:Peticion>
+  <pet:Atributos>
+    <pet:IdPeticion>${idPeticio}</pet:IdPeticion>
+    <pet:NumElementos>1</pet:NumElementos>
+    <pet:TimeStamp/>
+    <pet:CodigoCertificado>PSCP</pet:CodigoCertificado>
+    <pet:CodigoProducto>PSCP</pet:CodigoProducto>
+    <pet:DatosAutorizacion>
+      <pet:IdentificadorSolicitante>${idSolicitant}</pet:IdentificadorSolicitante>
+      <pet:NombreSolicitante>${nomSolicitant}</pet:NombreSolicitante>
+      <pet:Finalidad>PROVES</pet:Finalidad>
+    </pet:DatosAutorizacion>
+    <pet:Emisor>
+      <pet:NifEmisor>${nifEmissor}</pet:NifEmisor>
+      <pet:NombreEmisor>${nomEmissor}</pet:NombreEmisor>
+    </pet:Emisor>
+    <pet:Funcionario>
+      <pet:NombreCompletoFuncionario>${nomFuncionai}</pet:NombreCompletoFuncionario>
+      <pet:NifFuncionario>${nifFuncionari}</pet:NifFuncionario>
+      <pet:EMailFuncionario>${emailFuncionari}</pet:EMailFuncionario>
+    </pet:Funcionario>
+  </pet:Atributos>
+  <pet:Solicitudes>
+    <pet:SolicitudTransmision>
+      <pet:DatosGenericos>
+        <pet:Emisor>
+          <pet:NifEmisor>${nifEmissor}</pet:NifEmisor>
+          <pet:NombreEmisor>${nomEmissor}</pet:NombreEmisor>
+        </pet:Emisor>
+        <pet:Solicitante>
+          <pet:IdentificadorSolicitante>${idSolicitant}</pet:IdentificadorSolicitante>
+          <pet:NombreSolicitante>${nomSolicitant}</pet:NombreSolicitante>
+          <pet:Finalidad>PROVES</pet:Finalidad>
+          <pet:Consentimiento>Si</pet:Consentimiento>
+          <pet:Funcionario>
+            <pet:NombreCompletoFuncionario>${nomFuncionai}</pet:NombreCompletoFuncionario>
+            <pet:NifFuncionario>${nifFuncionari}</pet:NifFuncionario>
+            <pet:EMailFuncionario>${emailFuncionari}</pet:EMailFuncionario>
+          </pet:Funcionario>
+        </pet:Solicitante>
+        <pet:Transmision>
+          <pet:CodigoCertificado>PSCP</pet:CodigoCertificado>
+          <pet:IdSolicitud>1</pet:IdSolicitud>
+          <pet:IdTransmision>${idTransmissio}</pet:IdTransmision>
+        </pet:Transmision>
+      </pet:DatosGenericos>
+      <pet:DatosEspecificos>
+        <WSElectronicOffersExternalEvidencesList>
+          <capCodi>${codiCap}</capCodi>
+          <codiBE>${codiBackend}</codiBE>
+          <diligenceId>${idExpedient}</diligenceId>
+          <publisherId>${idPublicador}</publisherId>
+        </WSElectronicOffersExternalEvidencesList>
+      </pet:DatosEspecificos>
+    </pet:SolicitudTransmision>
+  </pet:Solicitudes>
+</pet:Peticion>
+
+```
+
+
+## 5.8 Taules codificadores generals <a name="5.8"></a>
 
 La següent taula és un extracte del manual d&#39;integració de la PSCP.
 
